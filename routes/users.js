@@ -54,7 +54,7 @@ router.post('/login', (req, res) => {
             name: user.name
           }
           let token = jwt.sign(payload, 'jwtsecret', {
-            expiresIn: 60
+            expiresIn: 1
           })
           res.send(token)
         } else {
@@ -67,6 +67,20 @@ router.post('/login', (req, res) => {
     .catch(err => {
       res.send('error:' + err)
     })
+})
+
+
+//Update use name
+//TODO add email and change password aswell to the CRUD
+router.put('/update/:id/', (req, res) => {
+  User.findOneAndUpdate(req.params.id, { $set: req.body }, (err, user) => {
+    // console.log(name)
+    if (err) {
+      res.send('Could not be updated')
+    } else {
+      res.send(User + ' updated')
+    }
+  })
 })
 
 module.exports = router;

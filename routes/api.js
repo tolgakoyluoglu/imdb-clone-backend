@@ -26,5 +26,35 @@ router.post("/movie", (req, res) => {
       res.json(data);
     });
 });
+//Get latest movies
+router.get("/latest", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.API_KEY}&language=en-US`
+    )
+    .then(({ data }) => {
+      res.json(data);
+    });
+});
+//Get popular
+router.get("/popular", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&language=en-US`
+    )
+    .then(({ data }) => {
+      res.json(data);
+    });
+});
+//get top movies
+router.get("/top", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.API_KEY}&language=en-US`
+    )
+    .then(({ data }) => {
+      res.json(data);
+    });
+});
 
 module.exports = router;
