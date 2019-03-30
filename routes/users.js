@@ -10,34 +10,55 @@ router.use(cors())
 // POST route to register a user
 router.post('/register', (req, res) => {
   console.log(req.body)
-  const userData = {
-    email: req.body.email,
-    name: req.body.name,
-    password: req.body.password
-  }
+  const { name, email, password } = req.body
+  //validate
+  if (!name || !email || !password) {
+    res.json({ msg: 'Please enter all fields!' })
+    //create new user
+  } else {
+    const userData = {
+      email: email,
+      name: name,
+      password: password
+    }
+    //check if user exists otherwise create user 
+    User.findOne({
+      email: email
+    })
+      .then(user => {
+        if (!user) {
+          bcrypt.hash(password, 10, (err, hash) => {
+            userData.password = hash
+            User.create(userData)
+              .then(user => {
 
-  User.findOne({
-    email: req.body.email
-  })
-    .then(user => {
-      if (!user) {
-        bcrypt.hash(req.body.password, 10, (err, hash) => {
-          userData.password = hash
-          User.create(userData)
-            .then(user => {
-              res.json({ status: user.email + 'registered' })
-            })
-            .catch(err => {
-              res.send('Error' + err)
-            })
-        })
-      } else {
-        res.json({ error: 'User already exists' })
-      }
-    })
-    .catch(err => {
-      res.send('error: ' + err)
-    })
+                let token = jwt.sign(
+                  { id: user.id, name: user.name, email: user.email },
+                  'jwtsecret', {
+                    expiresIn: 1600
+                  })
+                res.json({
+                  token,
+                  user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email
+                  }
+                })
+                res.json({ status: user.email + ' registered' })
+              })
+              .catch(err => {
+                res.send('Error' + err)
+              })
+          })
+        } else {
+          res.status(400).json({ error: 'User already exists' })
+        }
+      })
+      .catch(err => {
+        res.send('error: ' + err)
+      })
+  }
 })
 
 //Post to login user
@@ -48,17 +69,19 @@ router.post('/login', (req, res) => {
     .then(user => {
       if (user) {
         if (bcrypt.compareSync(req.body.password, user.password)) {
-          const payload = {
-            _id: user._id,
-            email: user.email,
-            name: user.name
-          }
-          let token = jwt.sign(payload, 'jwtsecret', {
-            expiresIn: 1
+          let token = jwt.sign({ id: user.id, email: user.email, name: user.name }, 'jwtsecret', {
+            expiresIn: 1600
           })
-          res.send(token)
+          res.json({
+            token,
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email
+            }
+          })
         } else {
-          res.json({ error: 'User does not exist' })
+          res.json({ error: 'Invalid password' })
         }
       } else {
         res.json({ error: 'User does not exist' })

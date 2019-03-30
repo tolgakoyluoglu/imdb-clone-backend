@@ -36,21 +36,21 @@ router.get("/latest", (req, res) => {
       res.json(data);
     });
 });
-//Get popular
-router.get("/popular", (req, res) => {
+//get top movies
+router.get("/top", (req, res) => {
   axios
     .get(
-      `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&language=en-US`
+      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.API_KEY}&language=en-US`
     )
     .then(({ data }) => {
       res.json(data);
     });
 });
 //get top movies
-router.get("/top", (req, res) => {
+router.get("/upcoming", (req, res) => {
   axios
     .get(
-      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.API_KEY}&language=en-US`
+      `https://api.themoviedb.org/3/movie/upcoming?api_key=${process.env.API_KEY}&language=en-US`
     )
     .then(({ data }) => {
       res.json(data);
