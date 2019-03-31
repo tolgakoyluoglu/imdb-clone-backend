@@ -13,7 +13,7 @@ router.post('/register', (req, res) => {
   const { name, email, password } = req.body
   //validate
   if (!name || !email || !password) {
-    res.json({ msg: 'Please enter all fields!' })
+    res.status(401).json({ msg: 'Please enter all fields!' })
     //create new user
   } else {
     const userData = {
@@ -45,14 +45,14 @@ router.post('/register', (req, res) => {
                     email: user.email
                   }
                 })
-                res.json({ status: user.email + ' registered' })
+                res.status(200).json({ status: user.email + ' is now registered' })
               })
               .catch(err => {
                 res.send('Error' + err)
               })
           })
         } else {
-          res.status(400).json({ error: 'User already exists' })
+          res.status(401).json({ error: 'User already exists' })
         }
       })
       .catch(err => {
@@ -82,31 +82,16 @@ router.post('/login', (req, res) => {
           })
         } else {
           res.status(401).json({
-            status: 'error',
-            message: 'Email and password do not match'
+            status: 'Email and password do not match'
           })
         }
       } else {
-        res.json({ error: 'User does not exist' })
+        res.status(401).json({ status: 'User does not exist' })
       }
     })
     .catch(err => {
       res.send('error:' + err)
     })
-})
-
-
-//Update use name
-//TODO add email and change password aswell to the CRUD
-router.put('/update/:id/', (req, res) => {
-  User.findOneAndUpdate(req.params.id, { $set: req.body }, (err, user) => {
-    // console.log(name)
-    if (err) {
-      res.send('Could not be updated')
-    } else {
-      res.send(User + ' updated')
-    }
-  })
 })
 
 module.exports = router;
