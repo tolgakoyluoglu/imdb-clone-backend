@@ -26,6 +26,27 @@ router.post("/movie", (req, res) => {
       res.json(data);
     });
 });
+//Get credit
+router.post("/credit", (req, res) => {
+  const { id } = req.body;
+  axios
+    .get(
+      `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.API_KEY}&language=en-US`
+    )
+    .then(({ data }) => {
+      res.json(data);
+    });
+});
+router.post("/video", (req, res) => {
+  const { id } = req.body;
+  axios
+    .get(
+      `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${process.env.API_KEY}&language=en-US`
+    )
+    .then(({ data }) => {
+      res.json(data);
+    });
+});
 //Get latest movies
 router.get("/latest", (req, res) => {
   axios

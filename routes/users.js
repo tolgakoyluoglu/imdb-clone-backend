@@ -81,7 +81,10 @@ router.post('/login', (req, res) => {
             }
           })
         } else {
-          res.json({ error: 'Invalid password' })
+          res.status(401).json({
+            status: 'error',
+            message: 'Email and password do not match'
+          })
         }
       } else {
         res.json({ error: 'User does not exist' })
