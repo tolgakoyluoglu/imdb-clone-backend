@@ -20,7 +20,8 @@ router.post('/add', (req, res) => {
     let movie = new Watchlist(
         {
             user: req.body.user,
-            title: req.body.title
+            title: req.body.title,
+            image: req.body.image
         }
     );
     movie.save(function (err) {
